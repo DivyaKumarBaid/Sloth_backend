@@ -36,7 +36,7 @@ def home(limit: int = 10):
             for res in cursor:
                 micropost = shortpost(res["body"])
                 posts.append(Post(author=res["author"], body=micropost,
-                                  tags=res["tags"], image=res["image"], date=res["date"], post_id=res["post_id"], author_id=res["author_id"]))
+                                  tags=res["tags"], image=res["image"], date=res["date"], post_id=res["post_id"], author_id=res["author_id"], code_link=res['code_link']))
 
         return posts
 
@@ -58,7 +58,7 @@ def create_Post(Inc_post: Inc_post, current_user: User = Depends(oauth2.get_curr
 
             # using schema to convert the incomign data
             posted = Post(author=Inc_post.author, body=Inc_post.body, author_id=Inc_post.author_id,
-                          tags=Inc_post.tags, image=Inc_post.image, date=str(date.today()), post_id=new_article_id)
+                          tags=Inc_post.tags, image=Inc_post.image, date=str(date.today()), post_id=new_article_id, code_link=Inc_post.code_link)
 
             # converting the basemodel to dic as mongo stores it
             res = database.posts.insert_one(dict(posted))
@@ -110,16 +110,15 @@ def get_tag(tag: str, limit: int = 10):
 def get_userPosts(id):
 
     try:
-        posts = []
-        cursor = database.collection.find(
+        posted = []
+        cursor = database.posts.find(
             {"author_id": id}).limit(10).sort("_id", -1)
         if cursor:
             for res in cursor:
                 micropost = shortpost(res["body"])
-                posts.append(Post(author=res["author"], body=micropost,
-                                  tags=res["tags"], image=res["image"], date=res["date"], post_id=res["id"], author_id=res["author_id"]))
+                posted.append(Post(**res))
 
-        return posts
+        return posted
 
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -151,7 +150,7 @@ def delete_posts(Del_post: Del_post, current_user: User = Depends(oauth2.get_cur
         if not cursor:
             raise HTTPException(status_code=status.HTTP_304_NOT_MODIFIED)
 
-        updt = cursor1['code_id']
+        updt = cursor1['posts']
         updt.remove(Del_post.post_id)
 
         myquery = {"author_id": Del_post.author_id}
@@ -160,5 +159,4 @@ def delete_posts(Del_post: Del_post, current_user: User = Depends(oauth2.get_cur
         database.user_col.update_one(myquery, newvalues)
 
     except:
-
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
