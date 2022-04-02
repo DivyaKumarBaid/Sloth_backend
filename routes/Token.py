@@ -1,5 +1,3 @@
-from asyncio.windows_events import NULL
-from http.client import UNAUTHORIZED
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import schemas
