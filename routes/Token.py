@@ -1,10 +1,7 @@
-from asyncio.windows_events import NULL
-from http.client import UNAUTHORIZED
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import schemas
 import database
-from fastapi import HTTPException
 
 
 ACCESS_TOKEN_SECRET_KEY = "h7qdsGDSr6AGg9616-VPSEP0w18vgXnMpey3JHvNPq8"

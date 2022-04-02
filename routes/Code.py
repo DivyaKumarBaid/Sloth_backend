@@ -1,9 +1,6 @@
-from turtle import update
 from fastapi import Depends, APIRouter, HTTPException, status
 import uuid
 from datetime import date
-
-from matplotlib.pyplot import title
 import database
 from routes import oauth2
 from schemas import (Del_code, Inc_code, Code, Code_dash, User)
