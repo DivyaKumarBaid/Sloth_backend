@@ -101,7 +101,7 @@ def get_tag(tag: str, limit: int = 10):
             {"tags": tag}).limit(limit).sort("_id", -1)
         if cursor:
             for res in cursor:
-                microblog = shortpost(res["body"])
+                microblog = res["body"]
                 posts.append(Post(author=res["author"], body=microblog,
                                   tags=res["tags"], image=res["image"], date=res["date"], post_id=res["id"], author_id=res["author_id"], liked_by=res["liked_by"]))
 
@@ -120,7 +120,7 @@ def get_userPosts(id):
             {"author_id": id}).limit(10).sort("_id", -1)
         if cursor:
             for res in cursor:
-                micropost = shortpost(res["body"])
+                micropost = res["body"]
                 posted.append(Post(**res))
 
         return posted
