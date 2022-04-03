@@ -1,8 +1,9 @@
 import uuid
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Body, HTTPException, status, Depends
 from datetime import date
 import database
-from schemas import (Post, Inc_post, User, Del_post)
+from schemas import (Comment_details,
+                     Post, Inc_post, User, Del_post)
 from routes import oauth2
 
 router = APIRouter(tags=["Posts"], prefix="/posts")
@@ -35,8 +36,7 @@ def home(limit: int = 10):
         if cursor:
             for res in cursor:
                 micropost = shortpost(res["body"])
-                posts.append(Post(author=res["author"], body=micropost,
-                                  tags=res["tags"], image=res["image"], date=res["date"], post_id=res["post_id"], author_id=res["author_id"], code_link=res['code_link']))
+                posts.append(Post(**res))
 
         return posts
 
@@ -57,8 +57,8 @@ def create_Post(Inc_post: Inc_post, current_user: User = Depends(oauth2.get_curr
             new_article_id = str(uuid.uuid4())
 
             # using schema to convert the incomign data
-            posted = Post(author=Inc_post.author, body=Inc_post.body, author_id=Inc_post.author_id,
-                          tags=Inc_post.tags, image=Inc_post.image, date=str(date.today()), post_id=new_article_id, code_link=Inc_post.code_link)
+            posted = Post(author=Inc_post.author, body=Inc_post.body, author_id=Inc_post.author_id, tags=Inc_post.tags,
+                          image=Inc_post.image, date=str(date.today()), post_id=new_article_id, code_link=Inc_post.code_link)
 
             # converting the basemodel to dic as mongo stores it
             res = database.posts.insert_one(dict(posted))
@@ -86,6 +86,30 @@ def create_Post(Inc_post: Inc_post, current_user: User = Depends(oauth2.get_curr
 
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# post comment
+@ router.post('/comment', status_code=201)
+def create_comment(Inc_comment: Comment_details, current_user: User = Depends(oauth2.get_current_user)):
+    try:
+        cursor = database.posts.find_one({"post_id": Inc_comment.post_id})
+        if not cursor:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        comment_detail = {
+            "post_id": Inc_comment.post_id,
+            "author": Inc_comment.author,
+            "author_id": Inc_comment.author_id,
+            "date": str(date.today()),
+            "body": Inc_comment.body,
+        }
+        updt = cursor['comments']
+        updt.append(comment_detail)
+        myquery = {"post_id": Inc_comment.post_id}
+        newvalues = {"$set": {"comments": updt}}
+
+        database.posts.update_one(myquery, newvalues)
+    except:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 @router.get('/tag/{tag}')

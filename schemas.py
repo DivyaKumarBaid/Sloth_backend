@@ -1,11 +1,12 @@
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 
 
-class Comment_details(BaseException):
-    author: str
-    date: str
-    body: str
+class Comment_details(BaseModel):
+    post_id: str = Field(...)
+    author: str = Field(...)
+    author_id: str = Field(...)
+    body: str = Field(...)
 
 # stored in the db
 
@@ -18,7 +19,7 @@ class Post(BaseModel):
     body: str = Field(...)
     tags: list[str] = []
     liked_by: list[str] = []
-    comments: list[str] = []
+    comments: list[dict] = []
     image: Optional[str]
     code_link: Optional[str]
 
@@ -142,14 +143,3 @@ class IntervalToken_ret(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
-
-
-# class ShowUser(BaseModel):
-#     author: str = Field(...)
-#     email: EmailStr = Field(...)
-#     posts: list[str] = []
-#     author_bio: str = Field(...)
-#     github_link: Optional[URL]
-#     linkedIn: Optional[URL]
-#     leetCode: Optional[URL]
-#     code_id: list[str]
