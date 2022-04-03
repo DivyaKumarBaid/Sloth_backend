@@ -79,10 +79,6 @@ class User(BaseModel):
     author: str = Field(...)
     email: EmailStr = Field(...)
     password: str = Field(...)
-    author_bio: str = Field("")
-    github_link: Optional[str]
-    linkedIn: Optional[str]
-    leetCode: Optional[str]
 
 # before validating user
 

@@ -19,7 +19,7 @@ def create_user(inc_user: User):
         etoken = Token.create_email_token(data={"sub": inc_user.email})
 
         Users = Pre_userdata(author=inc_user.author, password=hashing.hash_pass(
-            inc_user.password), email=inc_user.email, author_id=str(uuid.uuid4()), email_token=etoken, author_bio=inc_user.author_bio, github_link=inc_user.github_link, linkedIn=inc_user.linkedIn, leetCode=inc_user.leetCode)
+            inc_user.password), email=inc_user.email, author_id=str(uuid.uuid4()), email_token=etoken, author_bio="", github_link="", linkedIn="", leetCode="")
 
         cursor2 = database.user_col.find_one({"email": inc_user.email})
         if cursor2:
