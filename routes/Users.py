@@ -15,30 +15,30 @@ router = APIRouter(tags=["Users"], prefix="/users")
 @router.post('/create', status_code=201)
 def create_user(inc_user: User):
 
-    try:
-        etoken = Token.create_email_token(data={"sub": inc_user.email})
+    # try:
+    etoken = Token.create_email_token(data={"sub": inc_user.email})
 
-        Users = Pre_userdata(author=inc_user.author, password=hashing.hash_pass(
-            inc_user.password), email=inc_user.email, author_id=str(uuid.uuid4()), email_token=etoken, author_bio=inc_user.author_bio, github_link=inc_user.github_link, linkedIn=inc_user.linkedIn, leetCode=inc_user.leetCode)
+    Users = Pre_userdata(author=inc_user.author, password=hashing.hash_pass(
+        inc_user.password), email=inc_user.email, author_id=str(uuid.uuid4()), email_token=etoken, author_bio=inc_user.author_bio, github_link=inc_user.github_link, linkedIn=inc_user.linkedIn, leetCode=inc_user.leetCode)
 
-        cursor2 = database.user_col.find_one({"email": inc_user.email})
-        if cursor2:
+    cursor2 = database.user_col.find_one({"email": inc_user.email})
+    if cursor2:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+
+    else:
+        cursor1 = database.unverified_user.find_one(
+            {"email": inc_user.email})
+        if cursor1:
+            cursor3 = database.unverified_user.delete_one(
+                {"email": inc_user.email})
+
+        res = database.unverified_user.insert_one(dict(Users))
+        email_verification.email(inc_user.email)
+        if not res:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT)
 
-        else:
-            cursor1 = database.unverified_user.find_one(
-                {"email": inc_user.email})
-            if cursor1:
-                cursor3 = database.unverified_user.delete_one(
-                    {"email": inc_user.email})
-
-            res = database.unverified_user.insert_one(dict(Users))
-            email_verification.email(inc_user.email)
-            if not res:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT)
-
-    except:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    # except:
+    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @router.get("/email_verification/{token}", status_code=200)
