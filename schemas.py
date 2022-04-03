@@ -79,7 +79,7 @@ class User(BaseModel):
     author: str = Field(...)
     email: EmailStr = Field(...)
     password: str = Field(...)
-    author_bio: str = Field(...)
+    author_bio: str = Field("")
     github_link: Optional[str]
     linkedIn: Optional[str]
     leetCode: Optional[str]
@@ -92,7 +92,7 @@ class Pre_userdata(BaseModel):
     password: str = Field(...)
     email: EmailStr = Field(...)
     author_id: str = Field(...)
-    author_bio: str = Field(...)
+    author_bio: str = Field("")
     github_link: Optional[str]
     linkedIn: Optional[str]
     leetCode: Optional[str]
@@ -106,7 +106,7 @@ class User_data(BaseModel):
     password: str = Field(...)
     author_id: str = Field(...)
     posts: list[str] = []
-    author_bio: str = Field(...)
+    author_bio: str = Field("")
     github_link: Optional[str]
     linkedIn: Optional[str]
     leetCode: Optional[str]
