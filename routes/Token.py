@@ -2,12 +2,13 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import schemas
 import database
+import os
 
 
-ACCESS_TOKEN_SECRET_KEY = "h7qdsGDSr6AGg9616-VPSEP0w18vgXnMpey3JHvNPq8"
-REFRESH_TOKEN_SECRET_KEY = "h7qdsGDSr6AGg9616-VPSEP0w18vgXnMpey3JHvNPq8"
-EMAIL_TOKEN_SECRET_KEY = "h7qdsGDSr6AGg9616-VPSEP0w18vgXnMpey3JHvNPq8"
-ALGORITHM = "HS256"
+ACCESS_TOKEN_SECRET_KEY = os.environ.get('atoken')
+REFRESH_TOKEN_SECRET_KEY = os.environ.get('rtoken')
+EMAIL_TOKEN_SECRET_KEY = os.environ.get('etoken')
+ALGORITHM = os.environ.get('algo')
 
 
 def create_access_token(data: dict):

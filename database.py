@@ -1,9 +1,9 @@
 # mongoDB driver
 from pymongo import MongoClient
+import os
 
 # connection between mongodb and database.py
-client = MongoClient(
-    'mongodb+srv://code:code@cluster0.5jyfj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+client = MongoClient(os.environ.get('mongoClient'))
 
 database = client.code
 

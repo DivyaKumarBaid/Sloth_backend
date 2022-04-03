@@ -1,6 +1,7 @@
 import smtplib
 from email.message import EmailMessage
 import database
+import os
 
 
 def email(remail: str):
@@ -11,13 +12,13 @@ def email(remail: str):
 
     message = EmailMessage()
     # The mail addresses and password
-    sender_address = 'slothiitp@gmail.com'
-    sender_pass = 'Hackathon'
+    sender_address = os.environ.get('EMAIL_ID')
+    sender_pass = os.environ.get('EMAIL_PASS')
     receiver_address = remail
     message['From'] = sender_address
     message['To'] = receiver_address
     # The subject line
-    message['Subject'] = 'Dev.Blogs Welcome you to the family'
+    message['Subject'] = 'Sloth Welcomes you to the family'
 
     # Setup the MIME
 
