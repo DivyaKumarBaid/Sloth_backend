@@ -143,3 +143,9 @@ class IntervalToken_ret(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+# liked
+class Liked(BaseModel):
+    author_id: str
+    post_id: str
