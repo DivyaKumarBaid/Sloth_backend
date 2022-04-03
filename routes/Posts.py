@@ -97,23 +97,23 @@ def create_comment(Inc_comment: Comment_details, current_user: User = Depends(oa
 
 @ router.post('/like', status_code=201)
 def create_comment(Inc_liked: Liked, current_user: User = Depends(oauth2.get_current_user)):
-    # try:
-    cursor = database.posts.find_one({"post_id": Inc_liked.post_id})
-    if not cursor:
+    try:
+        cursor = database.posts.find_one({"post_id": Inc_liked.post_id})
+        if not cursor:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        likes = cursor['liked_by']
+        if Inc_liked.author_id in likes:
+            likes.remove(Inc_liked.author_id)
+        else:
+            likes.append(Inc_liked.author_id)
+
+        myquery = {"post_id": Inc_liked.post_id}
+        newvalues = {"$set": {"liked_by": likes}}
+
+        database.posts.update_one(myquery, newvalues)
+
+    except:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    likes = cursor['liked_by']
-    if Inc_liked.author_id in likes:
-        likes.remove(Inc_liked.author_id)
-    else:
-        likes.append(Inc_liked.author_id)
-
-    myquery = {"post_id": Inc_liked.post_id}
-    newvalues = {"$set": {"liked_by": likes}}
-
-    database.posts.update_one(myquery, newvalues)
-
-    # except:
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 @router.get('/tag/{tag}')
