@@ -9,24 +9,6 @@ from routes import oauth2
 router = APIRouter(tags=["Posts"], prefix="/posts")
 
 
-def shortpost(post):
-
-    micropost = ""
-    # this returns array splited by '\n'
-    post = post.split()
-
-    # shorting post for frontend
-    length = 27 if (len(post) > 27) else len(post)
-
-    # gen short post
-    for i in range(0, length):
-        micropost = micropost+post[i]+" "
-
-    micropost = micropost + " ... See more" if(length == 27) else micropost
-
-    return micropost
-
-
 # home all posts
 @router.get('/', status_code=200)
 def home(limit: int = 10):
@@ -35,7 +17,6 @@ def home(limit: int = 10):
         cursor = database.posts.find().limit(limit).sort("_id", -1)
         if cursor:
             for res in cursor:
-                micropost = shortpost(res["body"])
                 posts.append(Post(**res))
 
         return posts
