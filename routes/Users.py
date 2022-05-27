@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 import database
 import uuid
-from schemas import (IntervalToken_inc, IntervalToken_ret,Pre_userdata, ResLogin, User, User_data, Userdash)
+from schemas import (IntervalToken_inc, IntervalToken_ret,Pre_userdata, ResLogin, User, User_data, Userdash, Userincdash)
 import email_verification
 import hashing
 from routes import Token, oauth2
@@ -91,12 +91,14 @@ def verify_user_token(rtoken: IntervalToken_inc):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.get('/userDetails/{author_id}', status_code=201)
-def userDetails(author_id:str):
+@router.post('/userDetails', status_code=201)
+def userDetails(user_details:Userincdash):
     try:
-        cursor  = database.user_col.find_one({"author_id":author_id})
+        cursor  = database.user_col.find_one({"author_id":user_details.author_id})
         if not cursor:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+            
+        cursor['is_user']=True
         userinfo = Userdash(**cursor)
         return userinfo
         

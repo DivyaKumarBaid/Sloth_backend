@@ -1,4 +1,6 @@
+from lib2to3.pytree import Base
 from typing import Optional
+from fastapi import File
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -94,6 +96,10 @@ class Pre_userdata(BaseModel):
     leetCode: Optional[str]
     email_token: str = Field(...)
 
+# dash board
+class Userincdash(BaseModel):
+    author_id:str = Field(...)
+    access_token:str = Field(...)
 
 # after validation of user
 class User_data(BaseModel):
@@ -117,6 +123,7 @@ class Userdash(BaseModel):
     linkedIn: Optional[str]
     leetCode: Optional[str]
     code_id: list[str] = []
+    is_user:bool = Field(...)
 
 
 # data for login from frontend
