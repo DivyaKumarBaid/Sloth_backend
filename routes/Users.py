@@ -91,8 +91,8 @@ def verify_user_token(rtoken: IntervalToken_inc):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post('/userDetails/{author_id}', status_code=201)
-def create_user(author_id:str):
+@router.get('/userDetails/{author_id}', status_code=201)
+def userDetails(author_id:str):
     try:
         cursor  = database.user_col.find_one({"author_id":author_id})
         if not cursor:
