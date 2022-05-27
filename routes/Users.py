@@ -100,9 +100,9 @@ def userDetails(user_details:Userincdash):
         
         payload = Token.getPayloadDash(user_details.access_token)
         if payload == None or payload['author_id'] != user_details.author_id:
-            cursor['is_user']=True
-        else:
             cursor['is_user']=False
+        else:
+            cursor['is_user']=True
 
         userinfo = Userdash(**cursor)
         return userinfo
