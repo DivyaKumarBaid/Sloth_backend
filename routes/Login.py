@@ -25,8 +25,8 @@ def login(info: OAuth2PasswordRequestForm = Depends()):
         if flag == True:
             token = Create_token({
                 "email":info.username,
-                "author":cursor["user"],
-                "author_id":cursor["user_id"]
+                "author":cursor["author"],
+                "author_id":cursor["author_id"]
                 })
 
             res = ResLogin(
