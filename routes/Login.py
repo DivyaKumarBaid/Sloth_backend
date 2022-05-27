@@ -10,8 +10,8 @@ router = APIRouter(prefix="/Login", tags=['Login'])
 
 
 def Create_token(data: dict):
-    access_token = Token.create_access_token(data={"sub": data["email"],"name":data["name"],"user_id":data["user_id"]})
-    refresh_token = Token.create_refresh_token(data={"sub": data["email"],"name":data["name"],"user_id":data["user_id"]})
+    access_token = Token.create_access_token(data={"sub": data["email"],"author":data["author"],"author_id":data["author_id"]})
+    refresh_token = Token.create_refresh_token(data={"sub": data["email"],"author":data["author"],"author_id":data["author_id"]})
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
