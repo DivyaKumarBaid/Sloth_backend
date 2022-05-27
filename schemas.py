@@ -131,6 +131,7 @@ class Userdash(BaseModel):
 class BioUpdate(BaseModel):
     author_id:str = Field(...)
     access_token:str = Field(...)
+    author_bio: str = Field("")
     github_link: Optional[str]
     linkedIn: Optional[str]
     leetCode: Optional[str]

@@ -124,6 +124,7 @@ def UpdateBio(user_details:BioUpdate,current_user: User = Depends(oauth2.get_cur
 
         myquery = {"author_id": user_details.author_id}
         newvalues = {"$set": {
+            "author_bio":user_details.author_bio,
             "github_link":user_details.github_link,
             "linkedIn":user_details.linkedIn,
             "leetCode":user_details.leetCode,
