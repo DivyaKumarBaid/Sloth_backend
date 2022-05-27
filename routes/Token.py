@@ -1,8 +1,10 @@
+from fastapi import HTTPException,status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import schemas
 import database
 import os
+
 
 
 ACCESS_TOKEN_SECRET_KEY = os.environ.get('atoken')
@@ -37,6 +39,25 @@ def create_email_token(data: dict):
         to_encode, EMAIL_TOKEN_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+
+#verify token at email
+def verify_email_token(token: str):
+    try:
+        payload = jwt.decode(
+            token, EMAIL_TOKEN_SECRET_KEY, algorithms=ALGORITHM)
+
+        email: str = payload.get("sub")
+
+        cursor = database.user_col.find_one({"email": email})
+
+        if not cursor:
+            return False
+
+        return True
+
+    except JWTError:
+        return False
 
 def verify_token(token: str, credentials_exception):
     try:
@@ -75,3 +96,31 @@ def verify_token_at_call(token: str):
 
     except JWTError:
         return None
+
+
+#decode to get payload
+def getPayload(token: str):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(
+            token, ACCESS_TOKEN_SECRET_KEY, algorithms=ALGORITHM)
+
+        email: str = payload.get("sub")
+
+        cursor = database.user_col.find_one({"email": email})
+
+        if email is None or not cursor:
+            raise credentials_exception
+
+        return payload
+
+    except jwt.ExpiredSignatureError:
+        return True
+
+    except JWTError:
+        raise credentials_exception
+

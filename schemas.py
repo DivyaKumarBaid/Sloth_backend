@@ -108,6 +108,16 @@ class User_data(BaseModel):
     leetCode: Optional[str]
     code_id: list[str] = []
 
+class Userdash(BaseModel):
+    author: str = Field(...)
+    author_id: str = Field(...)
+    posts: list[str] = []
+    author_bio: str = Field("")
+    github_link: Optional[str]
+    linkedIn: Optional[str]
+    leetCode: Optional[str]
+    code_id: list[str] = []
+
 
 # data for login from frontend
 
