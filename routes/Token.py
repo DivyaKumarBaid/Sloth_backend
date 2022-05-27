@@ -85,6 +85,7 @@ def verify_token_at_call(token: str):
         payload = jwt.decode(
             token, REFRESH_TOKEN_SECRET_KEY, algorithms=ALGORITHM)
 
+        print(payload)
         email: str = payload.get("sub")
 
         cursor = database.user_col.find_one({"email": email})
@@ -92,7 +93,7 @@ def verify_token_at_call(token: str):
         if not cursor:
             return None
 
-        return create_access_token(data={"sub": email})
+        return create_access_token(data=payload)
 
     except JWTError:
         return None
