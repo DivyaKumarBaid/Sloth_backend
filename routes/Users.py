@@ -110,7 +110,7 @@ def userDetails(user_details:Userincdash):
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@router.post('/userDetails', status_code=201)
+@router.post('/updateBio', status_code=201)
 def UpdateBio(user_details:BioUpdate,current_user: User = Depends(oauth2.get_current_user)):
     try:
         cursor  = database.user_col.find_one({"author_id":user_details.author_id})
@@ -130,7 +130,7 @@ def UpdateBio(user_details:BioUpdate,current_user: User = Depends(oauth2.get_cur
             }
         }
         updated = database.user_col.update_one(myquery, newvalues)
-        
+
 
         userinfo = Userdash(**cursor)
         return userinfo
