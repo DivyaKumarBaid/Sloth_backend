@@ -125,6 +125,15 @@ class Userdash(BaseModel):
     code_id: list[str] = []
     is_user:bool = Field(...)
 
+# current_user: User = Depends(oauth2.get_current_user)
+
+# user info update
+class BioUpdate(BaseModel):
+    author_id:str = Field(...)
+    access_token:str = Field(...)
+    github_link: Optional[str]
+    linkedIn: Optional[str]
+    leetCode: Optional[str]
 
 # data for login from frontend
 

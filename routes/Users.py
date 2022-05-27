@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 import database
 import uuid
-from schemas import (IntervalToken_inc, IntervalToken_ret,Pre_userdata, ResLogin, User, User_data, Userdash, Userincdash)
+from schemas import (BioUpdate, IntervalToken_inc, IntervalToken_ret,Pre_userdata, ResLogin, User, User_data, Userdash, Userincdash)
 import email_verification
 import hashing
 from routes import Token, oauth2
@@ -103,6 +103,34 @@ def userDetails(user_details:Userincdash):
             cursor['is_user']=False
         else:
             cursor['is_user']=True
+
+        userinfo = Userdash(**cursor)
+        return userinfo
+        
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@router.post('/userDetails', status_code=201)
+def UpdateBio(user_details:BioUpdate,current_user: User = Depends(oauth2.get_current_user)):
+    try:
+        cursor  = database.user_col.find_one({"author_id":user_details.author_id})
+        if not cursor:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        
+        payload = Token.getPayloadDash(user_details.access_token)
+
+        if payload == None or payload['author_id'] != user_details.author_id:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+        myquery = {"author_id": user_details.author_id}
+        newvalues = {"$set": {
+            "github_link":user_details.github_link,
+            "linkedIn":user_details.linkedIn,
+            "leetCode":user_details.leetCode,
+            }
+        }
+        updated = database.user_col.update_one(myquery, newvalues)
+        
 
         userinfo = Userdash(**cursor)
         return userinfo
