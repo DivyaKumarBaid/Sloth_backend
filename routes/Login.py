@@ -9,9 +9,9 @@ from schemas import (ResLogin)
 router = APIRouter(prefix="/Login", tags=['Login'])
 
 
-def Create_token(email: str):
-    access_token = Token.create_access_token(data={"sub": email})
-    refresh_token = Token.create_refresh_token(data={"sub": email})
+def Create_token(data: dict):
+    access_token = Token.create_access_token(data={"sub": data["email"],"name":data["name"],"user_id":data["user_id"]})
+    refresh_token = Token.create_refresh_token(data={"sub": data["email"],"name":data["name"],"user_id":data["user_id"]})
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
@@ -23,7 +23,12 @@ def login(info: OAuth2PasswordRequestForm = Depends()):
     if cursor:
         flag = hashing.verify_pass(info.password, cursor["password"])
         if flag == True:
-            token = Create_token(info.username)
+            token = Create_token({
+                "email":info.username,
+                "author":cursor["user"],
+                "author_id":cursor["user_id"]
+                })
+
             res = ResLogin(
                 author_id=cursor["author_id"], access_token=token['access_token'], token_type=token['token_type'], author=cursor['author'], refresh_token=token['refresh_token'])
             return res

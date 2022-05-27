@@ -97,8 +97,13 @@ def userDetails(user_details:Userincdash):
         cursor  = database.user_col.find_one({"author_id":user_details.author_id})
         if not cursor:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        
+        payload = Token.getPayload(user_details.access_token)
+        if payload['author_id'] == user_details.author_id:
+            cursor['is_user']=True
+        else:
+            cursor['is_user']=False
             
-        cursor['is_user']=True
         userinfo = Userdash(**cursor)
         return userinfo
         

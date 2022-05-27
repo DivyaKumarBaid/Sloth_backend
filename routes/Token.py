@@ -119,7 +119,7 @@ def getPayload(token: str):
         return payload
 
     except jwt.ExpiredSignatureError:
-        return True
+        return credentials_exception
 
     except JWTError:
         raise credentials_exception
