@@ -1,3 +1,5 @@
+from asyncio.windows_events import NULL
+from pickle import NONE
 from fastapi import HTTPException,status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -124,4 +126,30 @@ def getPayload(token: str):
 
     except JWTError:
         raise credentials_exception
+
+#decode to get payload
+def getPayloadDash(token: str):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(
+            token, ACCESS_TOKEN_SECRET_KEY, algorithms=ALGORITHM)
+
+        email: str = payload.get("sub")
+
+        cursor = database.user_col.find_one({"email": email})
+
+        if email is None or not cursor:
+            return None
+
+        return payload
+
+    except jwt.ExpiredSignatureError:
+        return None
+
+    except JWTError:
+        return None
 

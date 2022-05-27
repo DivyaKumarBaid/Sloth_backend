@@ -98,12 +98,12 @@ def userDetails(user_details:Userincdash):
         if not cursor:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         
-        payload = Token.getPayload(user_details.access_token)
-        if payload['author_id'] == user_details.author_id:
+        payload = Token.getPayloadDash(user_details.access_token)
+        if payload == None or payload['author_id'] != user_details.author_id:
             cursor['is_user']=True
         else:
             cursor['is_user']=False
-            
+
         userinfo = Userdash(**cursor)
         return userinfo
         
