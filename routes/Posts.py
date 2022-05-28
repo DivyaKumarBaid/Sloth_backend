@@ -96,7 +96,7 @@ def create_comment(Inc_comment: Comment_details, current_user: User = Depends(oa
 
 
 @ router.post('/like', status_code=201)
-def create_comment(Inc_liked: Liked, current_user: User = Depends(oauth2.get_current_user)):
+def like(Inc_liked: Liked, current_user: User = Depends(oauth2.get_current_user)):
     try:
         cursor = database.posts.find_one({"post_id": Inc_liked.post_id})
         if not cursor:
