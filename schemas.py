@@ -123,7 +123,7 @@ class Userdash(BaseModel):
     linkedIn: Optional[str]
     leetCode: Optional[str]
     code_id: list[str] = []
-    is_user:bool = Field(...)
+    is_user:bool = False
 
 # current_user: User = Depends(oauth2.get_current_user)
 
